@@ -1,0 +1,39 @@
+### Get request for notes
+GET http://localhost:3001/api/persons
+
+### Get welcome screen
+GET http://localhost:3001/info
+
+### Get third person
+GET http://localhost:3001/api/persons/3
+
+### Get error from non-existant person
+GET http://localhost:3001/api/persons/10
+
+### Delete
+DELETE http://localhost:3001/api/persons/2
+
+### POST person
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "John Kim",
+  "number": "778-112-1134"
+}
+
+### POST w/ missing field
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+"number": "778-112-1134"
+}
+
+### POST w/ missing number
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "John Kim"
+}
