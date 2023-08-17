@@ -1,7 +1,11 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
+
+const PORT = process.env.PORT
 
 app.use(cors())
 app.use(express.static('build'))
@@ -38,7 +42,9 @@ const generateId = () => {
 }
 
 app.get('/api/persons', (request, response) => {
-    response.send(persons)
+    Person.find({}).then(persons => {
+        response.send(persons)
+    })
 })
 
 app.get('/info', (request, response) => {
@@ -51,7 +57,7 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
+    const person = Person.find({id: id})
 
     console.log(person)
 
@@ -63,10 +69,14 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    persons = persons.filter(person => person.id !== id)
+    const id = request.params.id
+    console.log(`delete ${id}`)
+    Person.deleteOne({id: id}).then(deletedObject => {
+        response.status(204).end()
+    })
 
-    response.status(204).end()
+    // persons = persons.filter(person => person.id !== id)
+
 })
 
 const customMorgan = morgan((tokens, req, res) => {
@@ -91,17 +101,19 @@ app.post('/api/persons', (request, response) => {
         response.status(400).send('Missing number')
     }
 
-    const newPerson = {
-        id: generateId(),
+    const newPerson = new Person({
         name: body.name,
-        number: body.number,
-    }
-    persons.concat(newPerson)
-    response.status(200).json(newPerson)
+        number: body.number
+    })
+
+    newPerson.save().then(newPerson => {
+        response.status(200).json(newPerson)
+    })
+    // persons.concat(newPerson)
 })
 
 
-const PORT = process.env.PORT || 3001
+// const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
