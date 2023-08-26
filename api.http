@@ -37,3 +37,13 @@ Content-Type: application/json
 {
   "name": "John Kim"
 }
+
+### PUT test
+PUT http://localhost:3001/api/persons/64dd5bae8ef1370142286b1a
+Content-Type: application/json
+
+{
+  "name": "John",
+  "number": "1178",
+  "id": "64dd5bae8ef1370142286b1a"
+}
